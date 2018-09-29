@@ -1,0 +1,19 @@
+{
+  "plugins": [
+    "transform-runtime"
+  ],
+  "env": {
+    "es": {
+      "presets": [["env", { "modules": false, "loose": true }], "stage-1"]
+    },
+    "commonjs": {
+      "plugins": ["transform-es2015-modules-commonjs"],
+      "presets": [["env", { "modules": false, "loose": true }], "stage-1"]
+    },
+    "umd": {
+      "plugins": ["transform-es2015-modules-umd"],
+      "presets": ["env", "stage-1"],
+      "moduleId": "DbMigr"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "db-migr",
+  "version": "0.1.0",
+  "description": "Javascript db migrations utility for SQLite, MySQL or other SQL Ansi databases",
+  "author": "Lucas Ferreira <contato@lucasferreira.com> (https://github.com/lucasferreira)",
+  "homepage": "https://github.com/lucasferreira/db-migr",
+  "license": "MIT",
+  "keywords": [
+    "migrations",
+    "migration",
+    "javascript",
+    "utility",
+    "util",
+    "sqlite",
+    "mysql",
+    "postgresql",
+    "pgsql",
+    "react-native",
+    "storage",
+    "upgrade",
+    "update"
+  ],
+  "main": "dist/commonjs/index.js",
+  "module": "dist/es/index.js",
+  "jsnext:main": "dist/es/index.js",
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucasferreira/db-migr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lucasferreira/db-migr/issues"
+  },
+  "scripts": {
+    "build:commonjs": "npm run clean:commonjs && cross-env NODE_ENV=commonjs babel src --out-dir dist/commonjs",
+    "build:es": "npm run clean:es && cross-env NODE_ENV=es babel src --out-dir dist/es",
+    "build:umd": "npm run clean:umd && cross-env NODE_ENV=umd babel src --out-dir dist/umd",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd",
+    "clean": "npm run clean:commonjs && npm run clean:es && npm run clean:umd",
+    "clean:commonjs": "rimraf dist/commonjs",
+    "clean:es": "rimraf dist/es",
+    "clean:umd": "rimraf dist/umd"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-1": "^6.24.1",
+    "cross-env": "^5.2.0",
+    "rimraf": "^2.6.2"
+  }
+}
