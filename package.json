@@ -1,6 +1,6 @@
 {
   "name": "db-migr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Javascript db migrations utility for SQLite, MySQL or other SQL Ansi databases",
   "author": "Lucas Ferreira <contato@lucasferreira.com> (https://github.com/lucasferreira)",
   "homepage": "https://github.com/lucasferreira/db-migr",

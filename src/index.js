@@ -14,7 +14,7 @@ async function querySql(sql, params = []) {
 
 async function execLog(debug = false, fn, ...params) {
   if (!!debug) {
-    console.log(`:: migr query :: ${fn.name} ::`, ...params);
+    console.log(`:: migr will query :: ${fn.name} ::`, ...params);
   }
 
   return await fn(...params);
@@ -27,11 +27,16 @@ export default async function migr(options) {
     migrations: [],
     createTable: createMigrTableSql,
     query: querySql,
-    run: querySql,
+    run: null,
     force: null,
     results: [],
     ...options,
   };
+
+  // If you didn't pass some `run` method, we will use the same `query` method to run
+  if (!adp.run && !!adp.query) {
+    adp.run = adp.query;
+  }
 
   const migrations = (typeof adp.migrations === "function" ? adp.migrations({ table: adp.table }) : adp.migrations)
     .filter(x => !!x.name && /^(\d+)(.*?)$/.test(x.name))
@@ -76,8 +81,6 @@ export default async function migr(options) {
     dbMigrations = [];
   }
 
-  adp.results = migrations.reduce((acc, k) => ({ ...acc, [k.name]: false }), {});
-
   // Undo migrations that exist only in the database but not in files,
   // also undo the last migration if the `adp.force` option was set to `last`.
   const lastMigration = migrations[migrations.length - 1];
@@ -100,8 +103,6 @@ export default async function migr(options) {
       } else {
         dbMigrations = dbMigrations.filter(x => +x.id !== +migration.id);
       }
-    } else {
-      adp.results[migration.name] = true;
     }
   }
 
@@ -126,7 +127,7 @@ export default async function migr(options) {
         ]);
         await execLog(adp.debug, adp.run, "COMMIT");
 
-        adp.results[migration.name] = true;
+        adp.results.push(migration.name);
       } catch (err) {
         await execLog(adp.debug, adp.run, "ROLLBACK");
         throw err;
@@ -134,5 +135,5 @@ export default async function migr(options) {
     }
   }
 
-  return adp.results;
+  return { success: true, error: false, results: adp.results };
 }
