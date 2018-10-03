@@ -51,7 +51,11 @@ DROP TABLE people;`,
 ];
 ```
 
+The `name` attribute it's required in each `migration`, so you can use this attribute as execution order and history. Every `name` needs to follow this format `{n}-{description}`. Migrations with names that didn't start with number will be ignored.
+
 Each `migration` in your array could be based in a complex string, or using two attributes `migrationUp` and `migrationDown`. You could use in up operations some array of queries also.
+
+It's very important to keep a history of migrations in your migrations array, if you remove some migration entry in futures updates/releases if you implements some `migrationDown` query this tool will automatically reverts your `migrationUp`.
 
 ### Implement your query runner
 
@@ -63,16 +67,17 @@ To make this tool more versatile *we didn't implement* a default _query runner_ 
 import migr from "db-migr";
 
 const myMigrations = [
-  ...a incremental list of migrations for your db
+  // a incremental list of migrations for your db...
 ];
 
 const dbConn = ...implements your database connection
 
 // run your migrations when you are sure that your db connection are already opened
 migr({
-  // implemention our query runner [required]
+  // implemention your query runner [required]
+  // this method needs to return some promisable function
   query: async (query, params = []) => {
-    return away dbConn.executeSql(query, params);
+    return await dbConn.executeSql(query, params);
   },
   // pass your migrations
   migrations: myMigrations
