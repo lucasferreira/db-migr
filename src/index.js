@@ -4,14 +4,24 @@ if (!Array.isArray) {
   };
 }
 
+/**
+ * This is the default sql used to create the `db-migr` table for log and controls which the migrations was already applied
+ */
 function createMigrTableSql(table) {
   return `CREATE TABLE IF NOT EXISTS ${table} (id INTEGER PRIMARY KEY, name TEXT NOT NULL, up TEXT NOT NULL, down TEXT NOT NULL)`;
 }
 
+/**
+ * Implements your own query runner method with your lib/adaptor for you SQL Ansi database
+ * This functions/method requires that you return some Promise or use async/await
+ */
 async function querySql(sql, params = []) {
   return true;
 }
 
+/**
+ * Private method used to run and log `(debug=true)` some functions
+ */
 async function execLog(debug = false, fn, ...params) {
   if (!!debug) {
     console.log(`:: migr will query :: ${fn.name} ::`, ...params);
@@ -20,6 +30,14 @@ async function execLog(debug = false, fn, ...params) {
   return await fn(...params);
 }
 
+/**
+ * Default function of this tool.
+ * Heavily based in `node-sqlite` (https://github.com/kriasoft/node-sqlite/blob/master/src/Database.js#L146) implementation.
+ * You need to pass some `options` object as first `migr` argument. This object requires some `migrations` array and at least
+ * a `query` runner async method for internal operations. If you need you could specific a `run` methods for queries like
+ * INSERT, UPDATE or DELETE that doesn't return results.
+ * Other attributes like `debug` (for log queries), and `table` (if you need to set the default db-migr table name) are optional
+ */
 export default async function migr(options) {
   const adp = {
     debug: false,
@@ -60,10 +78,6 @@ export default async function migr(options) {
     })
     .filter(x => !!x.migrationUp)
     .sort((a, b) => Math.sign(a.id - b.id));
-
-  if (!migrations.length) {
-    return true;
-  }
 
   await execLog(adp.debug, adp.run, adp.createTable(adp.table));
 

@@ -32,7 +32,7 @@ DROP TABLE people;`,
 migr({
   migrations,
   query: async (query, params = []) => {
-    // fake query waiting time...
+    // fake query implementation with a little delay time...
     await timeout(1000);
     return [];
   },
